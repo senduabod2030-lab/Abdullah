@@ -3,6 +3,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import Bidi from "@/components/Bidi";
 import TaskForm from "@/components/TaskForm";
 import { CatChip, Empty, ErrorBox } from "@/components/ui";
+import { ListSkeleton } from "@/components/Skeleton";
 import { useView } from "@/components/View";
 import { supabaseBrowser } from "@/lib/supabase/client";
 import { RECURRENCE_LABEL, type Task } from "@/lib/types";
@@ -78,7 +79,7 @@ export default function TasksPage() {
         );
       })}
       <input className="input" placeholder="🔎 ابحث في مهامي" value={q} onChange={(e) => setQ(e.target.value)} aria-label="بحث" />
-      {loading ? <p className="text-mute">جارٍ التحميل…</p> : own.length === 0 ? (
+      {loading ? <ListSkeleton rows={3} /> : own.length === 0 ? (
         <Empty>لا توجد مهام مخصصة بعد. أضف أول عادة، مثل «ورد القرآن» وكرّرها كل يوم.</Empty>
       ) : (
         <div className="space-y-2">

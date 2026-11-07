@@ -29,15 +29,15 @@ export default function Nav() {
 
   return (
     <>
-      <header className="sticky top-0 z-30 border-b border-line bg-bg/95 backdrop-blur">
+      <header className="geo sticky top-0 z-30 border-b border-line bg-bg/90 backdrop-blur-md">
         <div className="mx-auto flex max-w-6xl items-center gap-3 px-4 py-2">
-          <span className="text-lg font-bold">📖 لوحة العادات</span>
+          <span className="text-lg font-extrabold text-brand">📖 <span className="text-ink">لوحة العادات</span></span>
           <nav className="hidden flex-1 gap-1 md:flex" aria-label="التنقل الرئيسي">
             {links.map((l) => {
               const active = path === l.href;
               return (
                 <Link key={l.href} href={href(l.href)} aria-current={active ? "page" : undefined}
-                  className={`rounded-lg px-3 py-2 text-sm font-semibold ${active ? "bg-blue-soft text-blue" : "text-mute hover:text-ink"}`}>
+                  className={`rounded-lg px-3 py-2 text-sm font-semibold ${active ? "bg-brand-soft text-brand" : "text-mute hover:text-ink"}`}>
                   {l.icon} {l.label}
                 </Link>
               );
@@ -65,7 +65,7 @@ export default function Nav() {
           const active = path === l.href;
           return (
             <Link key={l.href} href={href(l.href)} aria-current={active ? "page" : undefined}
-              className={`flex min-h-[56px] flex-1 flex-col items-center justify-center text-[11px] font-semibold ${active ? "text-blue" : "text-mute"}`}>
+              className={`flex min-h-[56px] flex-1 flex-col items-center justify-center text-[11px] font-semibold ${active ? "text-brand" : "text-mute"}`}>
               <span className="text-lg" aria-hidden>{l.icon}</span>{l.label}
             </Link>
           );

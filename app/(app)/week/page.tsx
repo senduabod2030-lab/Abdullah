@@ -2,6 +2,7 @@
 import { useState } from "react";
 import DayPanel from "@/components/DayPanel";
 import { Bar, pct } from "@/components/ui";
+import { GridSkeleton, ListSkeleton } from "@/components/Skeleton";
 import { useView } from "@/components/View";
 import { useData } from "@/lib/useData";
 import { rangeStats, sumStats } from "@/lib/recurrence";
@@ -36,10 +37,11 @@ export default function WeekPage() {
         <div className="mb-2 flex justify-between text-sm font-semibold"><span>إنجاز الأسبوع</span><span>{sum.done} / {sum.total} ({pct(sum.done, sum.total)}%)</span></div>
         <Bar value={sum.done} total={sum.total} label="إنجاز الأسبوع" />
       </div>
+      {data.loading && data.tasks.length === 0 ? <><GridSkeleton /><ListSkeleton rows={3} /></> : <>
       <div className="grid grid-cols-2 gap-2 sm:grid-cols-4 lg:grid-cols-7">
         {stats.map((s, i) => (
-          <button key={s.date} onClick={() => setSel(s.date)} aria-pressed={s.date === selDate}
-            className={`card text-start ${s.date === selDate ? "!border-blue" : ""} ${s.date === today ? "ring-1 ring-gold" : ""}`}>
+          <button key={s.date} style={{ animationDelay: `${i * 45}ms` }} onClick={() => setSel(s.date)} aria-pressed={s.date === selDate}
+            className={`card animate-fade-up text-start hover:-translate-y-0.5 hover:!border-brand/60 ${s.date === selDate ? "!border-brand" : ""} ${s.date === today ? "ring-1 ring-gold" : ""}`}>
             <div className="font-bold">{DAY_NAMES[i]}</div>
             <div className="text-xs text-mute">{parse(s.date).getDate()} {MONTH_NAMES[parse(s.date).getMonth()]}</div>
             <div className="my-2"><Bar value={s.done} total={s.total} color="green" label={`إنجاز ${DAY_NAMES[i]}`} /></div>
@@ -49,6 +51,7 @@ export default function WeekPage() {
         ))}
       </div>
       <DayPanel date={selDate} data={data} />
+      </>}
     </div>
   );
 }

@@ -21,11 +21,11 @@ export default function Login() {
   }
 
   return (
-    <main className="mx-auto flex min-h-screen max-w-sm items-center px-4">
-      <form onSubmit={submit} className="card w-full space-y-4">
+    <main className="geo mx-auto flex min-h-screen max-w-sm items-center px-4">
+      <form onSubmit={submit} className="card w-full animate-fade-up space-y-4 !border-brand/30 !p-6">
         <div className="text-center">
-          <div className="text-4xl" aria-hidden>📖</div>
-          <h1 className="mt-2 text-xl font-bold">لوحة العادات</h1>
+          <div className="mx-auto flex h-16 w-16 animate-float items-center justify-center rounded-2xl bg-brand-soft text-4xl" aria-hidden>📖</div>
+          <h1 className="mt-3 text-2xl font-extrabold">لوحة العادات</h1>
           <p className="text-sm text-mute">القرآن الكريم واللغة الإنجليزية</p>
         </div>
         <div>

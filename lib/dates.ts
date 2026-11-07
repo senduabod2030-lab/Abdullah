@@ -58,3 +58,10 @@ export function fmtMinutes(min: number): string {
   if (h) return `${h} ساعة`;
   return `${m} دقيقة`;
 }
+
+/** التاريخ الهجري (أم القرى) كنص عربي، أو سلسلة فارغة إن لم يدعمه المتصفح */
+export function hijri(s: string): string {
+  try {
+    return new Intl.DateTimeFormat("ar-SA-u-ca-islamic-umalqura-nu-latn", { day: "numeric", month: "long", year: "numeric" }).format(parse(s));
+  } catch { return ""; }
+}

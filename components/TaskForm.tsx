@@ -42,8 +42,8 @@ export default function TaskForm({ initial, defaultDate, onSave, onClose }: Prop
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-end justify-center bg-black/60 p-0 sm:items-center sm:p-4" role="dialog" aria-modal="true" aria-label={initial ? "تعديل مهمة" : "مهمة جديدة"}>
-      <form onSubmit={submit} className="max-h-[92vh] w-full max-w-lg space-y-3 overflow-y-auto rounded-t-3xl border border-line bg-card p-5 sm:rounded-3xl">
+    <div className="fixed inset-0 z-50 flex animate-fade-in items-end justify-center bg-black/70 p-0 backdrop-blur-sm sm:items-center sm:p-4" role="dialog" aria-modal="true" aria-label={initial ? "تعديل مهمة" : "مهمة جديدة"}>
+      <form onSubmit={submit} className="max-h-[92vh] w-full max-w-lg animate-sheet-up space-y-3 overflow-y-auto rounded-t-3xl border border-line bg-card p-5 sm:rounded-3xl">
         <h2 className="text-lg font-bold">{initial ? "تعديل المهمة" : "مهمة جديدة"}</h2>
         {initial && initial.recurrence !== "none" && (
           <p className="rounded-lg bg-gold-soft p-2 text-xs text-gold">التعديل يشمل كل تكرارات هذه المهمة.</p>

@@ -2,6 +2,7 @@
 import { useState } from "react";
 import DayPanel from "@/components/DayPanel";
 import { Bar, pct } from "@/components/ui";
+import { ListSkeleton, Sk } from "@/components/Skeleton";
 import { useView } from "@/components/View";
 import { useData } from "@/lib/useData";
 import { rangeStats, sumStats } from "@/lib/recurrence";
@@ -44,6 +45,9 @@ export default function MonthPage() {
         <div className="grid grid-cols-7 gap-1 text-center text-xs text-mute">
           {DAY_NAMES.map((n) => <div key={n} className="py-1">{n.replace("ال", "")}</div>)}
         </div>
+        {data.loading && data.tasks.length === 0 ? (
+          <div className="grid grid-cols-7 gap-1" role="status" aria-label="جارٍ التحميل">{Array.from({ length: 35 }).map((_, i) => <Sk key={i} className="h-[52px] !rounded-lg" />)}</div>
+        ) : (
         <div className="grid grid-cols-7 gap-1">
           {Array.from({ length: lead }).map((_, i) => <div key={`e${i}`} />)}
           {stats.map((s) => {
@@ -52,15 +56,15 @@ export default function MonthPage() {
             return (
               <button key={s.date} onClick={() => setSel(s.date)} aria-pressed={s.date === selDate}
                 aria-label={`${parse(s.date).getDate()} ${MONTH_NAMES[m]}: ${s.total ? `${s.done} من ${s.total}` : "بلا مهام"}`}
-                className={`flex min-h-[52px] flex-col items-center justify-center rounded-lg border text-sm ${s.date === selDate ? "border-blue" : "border-line"} ${s.date === today ? "ring-1 ring-gold" : ""} ${full ? "bg-green-soft" : ""}`}>
+                className={`flex min-h-[52px] flex-col items-center justify-center rounded-lg border text-sm transition hover:border-brand/60 ${s.date === selDate ? "border-brand" : "border-line"} ${s.date === today ? "ring-1 ring-gold" : ""} ${full ? "bg-green-soft" : ""}`}>
                 <span className="font-semibold">{parse(s.date).getDate()}</span>
                 <span className={`text-[10px] ${full ? "text-green" : "text-mute"}`}>{s.total ? (full ? "✓ مكتمل" : `${s.done}/${s.total}`) : ""}</span>
               </button>
             );
           })}
-        </div>
+        </div>)}
       </div>
-      <DayPanel date={selDate} data={data} />
+      {data.loading && data.tasks.length === 0 ? <ListSkeleton rows={2} /> : <DayPanel date={selDate} data={data} />}
     </div>
   );
 }

@@ -32,20 +32,22 @@ export default function DayPanel({ date, data, title }: { date: string; data: Da
     <section aria-label={title ?? prettyDate(date)}>
       <div className="mb-3 flex flex-wrap items-center gap-3">
         <h2 className="text-lg font-bold">{title ?? prettyDate(date)}</h2>
-        <span className="chip bg-line text-mute">{req.length ? `${done} من ${req.length} مهمة` : "لا مهام"}</span>
+        <span className="chip bg-line text-mute">{data.loading ? "…" : req.length ? `${done} من ${req.length} مهمة` : "لا مهام"}</span>
         <button className="btn btn-primary mr-auto" onClick={() => setAdding(true)}>＋ مهمة</button>
       </div>
       {req.length > 0 && <div className="mb-4"><Bar value={done} total={req.length} color="green" label="تقدم اليوم" /><p className="mt-1 text-xs text-mute">إنجاز اليوم {pct(done, req.length)}% (حسب المهام المحددة فعليًا)</p></div>}
       <ErrorBox msg={data.error} />
       {occs.length === 0 && <Empty>لا توجد مهام في هذا اليوم. أضف مهمة أو طبّق قالبًا من صفحة القوالب.</Empty>}
       <div className="space-y-3">
-        {groups.map((g) =>
-          g.plan ? (
-            <PlanCard key={g.key} date={date} group={g} data={data} onEdit={setEditing} />
+        {groups.map((g, gi) => (
+          <div key={g.key} className="animate-fade-up" style={{ animationDelay: `${Math.min(gi, 8) * 40}ms` }}>
+          {g.plan ? (
+            <PlanCard date={date} group={g} data={data} onEdit={setEditing} />
           ) : (
-            <OccRow key={g.key} o={g.items[0]} data={data} onEdit={setEditing} />
-          ),
-        )}
+            <OccRow o={g.items[0]} data={data} onEdit={setEditing} />
+          )}
+          </div>
+        ))}
       </div>
       {(adding || editing) && (
         <TaskForm initial={editing} defaultDate={date}
@@ -72,7 +74,7 @@ function PlanCard({ date, group, data, onEdit }: { date: string; group: { plan?:
       </div>
       <div className="px-4 pt-3"><Bar value={d} total={all.length} color="green" label="تقدم اليوم" /></div>
       <div className="space-y-1 p-2">
-        <div className="px-2 pt-1 text-xs font-bold text-blue">القواعد والتطبيق — {mins(grammar)} دقيقة</div>
+        <div className="px-2 pt-1 text-xs font-bold text-violet">القواعد والتطبيق — {mins(grammar)} دقيقة</div>
         {grammar.map((o) => <OccRow key={o.key} o={o} data={data} onEdit={onEdit} flat />)}
         {skills.length > 0 && <div className="px-2 pt-3 text-xs font-bold text-green">{SKILLS_GROUP} — {mins(skills)} دقيقة</div>}
         {skills.map((o) => <OccRow key={o.key} o={o} data={data} onEdit={onEdit} flat />)}
@@ -97,8 +99,8 @@ function OccRow({ o, data, onEdit, flat }: { o: Occurrence; data: DataApi; onEdi
       <div className="flex items-center gap-3">
         <button role="checkbox" aria-checked={done} aria-label={`إنجاز: ${t.title}`} disabled={skipped}
           onClick={() => data.setComp(t.id, o.date, { status: done ? "pending" : "done" })}
-          className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border-2 text-xl transition ${done ? "border-green bg-green text-bg" : "border-line text-transparent hover:border-green"} disabled:opacity-40`}>
-          ✓
+          className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-xl border-2 text-xl transition active:scale-90 ${done ? "border-green bg-green text-bg shadow-[0_0_18px_-4px_#34d399]" : "border-line text-transparent hover:border-green"} disabled:opacity-40`}>
+          <span key={String(done)} className={done ? "animate-pop" : ""}>✓</span>
         </button>
         <button className="min-w-0 flex-1 py-2 text-start" onClick={() => setOpen(!open)} aria-expanded={open}>
           <div className={`font-semibold ${done ? "text-mute line-through" : ""} ${skipped ? "text-mute" : ""}`}>
@@ -116,7 +118,7 @@ function OccRow({ o, data, onEdit, flat }: { o: Occurrence; data: DataApi; onEdi
         </button>
       </div>
       {open && (
-        <div className="space-y-3 border-t border-line px-1 pb-2 pt-3 mt-2">
+        <div className="mt-2 animate-fade-in space-y-3 border-t border-line px-1 pb-2 pt-3">
           {t.notes && <p className="whitespace-pre-wrap text-sm text-mute">{t.notes}</p>}
           <div>
             <label className="label" htmlFor={`n-${o.key}`}>ملاحظاتي</label>

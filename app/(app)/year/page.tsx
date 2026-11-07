@@ -1,6 +1,7 @@
 "use client";
 import { useState } from "react";
 import { Bar, Stat, pct } from "@/components/ui";
+import { Sk, StatsSkeleton } from "@/components/Skeleton";
 import { useView } from "@/components/View";
 import { useData } from "@/lib/useData";
 import { rangeStats, sumStats } from "@/lib/recurrence";
@@ -11,7 +12,7 @@ function cell(done: number, total: number) {
   const p = done / total;
   if (p === 0) return "bg-rose-soft";
   if (p < 0.5) return "bg-gold-soft";
-  if (p < 1) return "bg-blue-soft";
+  if (p < 1) return "bg-green-mid";
   return "bg-green";
 }
 
@@ -37,14 +38,15 @@ export default function YearPage() {
           <button className="btn" onClick={() => setY(y + 1)} aria-label="السنة التالية">←</button>
         </div>
       </div>
+      {data.loading && data.tasks.length === 0 ? <><StatsSkeleton /><Sk className="h-72" /></> : <>
       <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
         <Stat big={`${pct(sum.done, sum.total)}%`} label="إنجاز السنة" sub={`${sum.done} من ${sum.total} مهمة`} tone="green" />
-        <Stat big={String(fullDays)} label="أيام مكتملة بالكامل" sub={`من ${activeDays} يوم فيه مهام`} tone="blue" />
+        <Stat big={String(fullDays)} label="أيام مكتملة بالكامل" sub={`من ${activeDays} يوم فيه مهام`} tone="violet" />
         <Stat big={`${Math.round(sum.doneMin / 6) / 10}`} label="ساعات منجزة" tone="gold" />
         <Stat big={`${Math.round(sum.totalMin / 6) / 10}`} label="ساعات مخططة" />
       </div>
       <div className="card overflow-x-auto">
-        <p className="mb-3 text-xs text-mute">كل مربع يوم. <span className="chip bg-green text-bg">أخضر: مكتمل</span> <span className="chip bg-blue-soft text-blue">أزرق: أكثر من النصف</span> <span className="chip bg-gold-soft text-gold">أصفر: أقل من النصف</span> <span className="chip bg-rose-soft text-rose">أحمر: لم يُنجز</span> <span className="chip bg-line/40 text-mute">رمادي: بلا مهام</span></p>
+        <p className="mb-3 text-xs text-mute">كل مربع يوم. <span className="chip bg-green text-bg">أخضر: مكتمل</span> <span className="chip bg-green-mid text-green">أخضر فاتح: أكثر من النصف</span> <span className="chip bg-gold-soft text-gold">أصفر: أقل من النصف</span> <span className="chip bg-rose-soft text-rose">أحمر: لم يُنجز</span> <span className="chip bg-line/40 text-mute">رمادي: بلا مهام</span></p>
         <div className="grid min-w-[640px] grid-cols-3 gap-4 md:grid-cols-4">
           {MONTH_NAMES.map((mn, m) => {
             const days = stats.filter((s) => parse(s.date).getMonth() === m);
@@ -55,7 +57,7 @@ export default function YearPage() {
                   {Array.from({ length: parse(days[0].date).getDay() }).map((_, i) => <div key={i} />)}
                   {days.map((s) => (
                     <div key={s.date} title={`${s.date}: ${s.total ? `${s.done}/${s.total}` : "بلا مهام"}`}
-                      className={`aspect-square rounded-[3px] ${cell(s.done, s.total)} ${s.date === today ? "ring-1 ring-gold" : ""}`} />
+                      className={`aspect-square rounded-[3px] transition hover:scale-125 ${cell(s.done, s.total)} ${s.date === today ? "ring-1 ring-gold" : ""}`} />
                   ))}
                 </div>
               </div>
@@ -72,6 +74,7 @@ export default function YearPage() {
           </div>
         ))}
       </div>
+      </>}
       {data.error && <p className="text-rose">{data.error}</p>}
     </div>
   );

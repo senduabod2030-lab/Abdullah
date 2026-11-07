@@ -2,6 +2,7 @@
 import Link from "next/link";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { Bar, ErrorBox, pct } from "@/components/ui";
+import { Sk } from "@/components/Skeleton";
 import { useView } from "@/components/View";
 import { supabaseBrowser } from "@/lib/supabase/client";
 import { compCache, rangeStats, streak, sumStats } from "@/lib/recurrence";
@@ -71,6 +72,7 @@ export default function AdminPage() {
       {msg && <p role="status" className="rounded-xl bg-green-soft p-3 text-sm text-green">✓ {msg}</p>}
 
       <div className="grid gap-3 md:grid-cols-2">
+        {tasks.length === 0 && comps.length === 0 && !err && profiles.map((p) => <Sk key={`sk${p.id}`} className="h-56" />)}
         {profiles.map((p) => {
           const ut = tasks.filter((t) => t.user_id === p.id);
           const cache = compCache(comps.filter((c) => c.user_id === p.id));
